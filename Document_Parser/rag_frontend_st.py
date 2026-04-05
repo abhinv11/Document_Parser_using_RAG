@@ -3,12 +3,13 @@ import uuid
 import streamlit as st 
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
-from rag_backend import chatbot, ingest_pdf, retrieve_all_threads, thread_document_metadata
+from rag_backend import chatbot, ingest_pdf, thread_document_metadata
 
 
 #--------------------------------Utilities---------------------------------
 def generate_thread_id():
-    return uuid.uuid4()
+    # Prefix thread IDs with a per-session namespace to avoid collisions across users.
+    return f"{st.session_state['session_namespace']}-{uuid.uuid4().hex}"
 
 def reset_chat():
     thread_id = generate_thread_id()
@@ -30,11 +31,15 @@ def load_conversation(thread_id):
 if "message_history" not in st.session_state:
     st.session_state["message_history"] = []
 
+if "session_namespace" not in st.session_state:
+    st.session_state["session_namespace"] = uuid.uuid4().hex
+
 if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = generate_thread_id()
 
 if "chat_threads" not in st.session_state:
-    st.session_state["chat_threads"] = retrieve_all_threads()
+    # Keep thread list private to the current browser session.
+    st.session_state["chat_threads"] = []
 
 if "ingested_docs" not in st.session_state:
     st.session_state["ingested_docs"] = {}
