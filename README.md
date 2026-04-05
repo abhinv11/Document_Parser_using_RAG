@@ -1,5 +1,7 @@
 # Document Parser using RAG
 
+Deployed Link - [Document Parser AI agent](https://documentparseraiagent.streamlit.app/)
+
 This repository contains an AI agent application in the `Document_Parser` directory.
 
 ## Repository Layout
